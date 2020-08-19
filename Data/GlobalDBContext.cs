@@ -1,6 +1,7 @@
 
-﻿using Global_Intern.Models;
+using Global_Intern.Models;
 using Microsoft.EntityFrameworkCore;
+using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace Global_Intern.Data
 {
@@ -8,7 +9,7 @@ namespace Global_Intern.Data
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = @"Data Source=skynet\sqlexpress;Initial Catalog=GlobalDB;Integrated Security=True";
+            string connectionString = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             _ = optionsBuilder
                 .UseSqlServer(connectionString, builder => builder.UseRowNumberForPaging(true));
 

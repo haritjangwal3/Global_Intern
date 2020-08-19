@@ -1,7 +1,57 @@
-﻿
+
+@model Global_Intern.Models.StudentModels.ApplyInternship
 @{
     ViewData["Title"] = "InternshipApply";
 }
 
-<h1>InternshipApply</h1>
+
+	 <head>
+		<title> Apply Intern </title>        
+	 </head>	
+
+	
+     <body>
+
+         <h1 class="dpt">Internship</h1>
+
+         <h2> Software Developer</h2>
+         <p>@@UserFirstName + @@UserLastName </p>
+         <p>@@UserPhone </p>
+         <p>@@UserEmail </p>
+
+         <!-- Here is section of Resume -->
+         <div class="row">
+             <div class="side">
+                 <h2>Resumé</h2>
+                 <form>
+                     <label for="cv">Choose a resume:</label>
+                     <select name="cv" id="cv">
+                         <option value="select">Select a resume on our website</option>
+                         <option value="upload">Upload a resume</option>
+                         <option value="dont">Do not include a resume</option>
+                     </select>
+                     <br><br>
+                 </form>
+             </div>
+         </div>
+
+         <!-- Here is section of Covering letter -->
+         <div class="row">
+             <div class="side">
+                 <h2>Cover Letter</h2>
+                 <form>
+                     <label for="cl">Choose a covering letter:</label>
+                     <select name="cl" id="cl">
+                         <option value="select">Select a cover letter on our website</option>
+                         <option value="upload">Upload a cover letter</option>
+                         <option value="dont">Do not include a cover letter</option>
+                     </select>
+                     <br><br>
+                 </form>
+             </div>
+         </div>
+
+         <input type="submit" value="Submit">
+
+     </body>
 
