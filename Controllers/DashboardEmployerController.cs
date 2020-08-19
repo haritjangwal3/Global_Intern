@@ -51,7 +51,7 @@ namespace Global_Intern.Controllers
         public IActionResult Index()
         {
             // Display User name on the right-top corner - shows user is logedIN
-            ViewData["LoggeduserName"] = _user.UserFirstName + ' ' + _user.UserLastName;
+            ViewData["LoggeduserName"] = new List<string>() { _user.UserFirstName + ' ' + _user.UserLastName, _user.UserImage };
 
             // Geting Dashboard Menu from project/data/DashboardMenuOption.json into ViewData
             string path = _env.ContentRootPath + @"\Data\DashboardMenuOptions.json";
@@ -70,7 +70,7 @@ namespace Global_Intern.Controllers
         public IActionResult GeneralProfile()
         {
             // Display User name on the right-top corner - shows user is logedIN
-            ViewData["LoggeduserName"] = _user.UserFirstName + ' ' + _user.UserLastName;
+            ViewData["LoggeduserName"] = new List<string>() { _user.UserFirstName + ' ' + _user.UserLastName, _user.UserImage };
 
             // Geting Dashboard Menu from project/data/DashboardMenuOption.json into ViewData
             string path = _env.ContentRootPath + @"\Data\DashboardMenuOptions.json";
@@ -120,7 +120,11 @@ namespace Global_Intern.Controllers
         [HttpPost]
         public IActionResult GeneralProfile(GeneralProfile generalProfile)
         {
-            
+            // Display User name on the right-top corner - shows user is logedIN
+            ViewData["LoggeduserName"] = new List<string>() { _user.UserFirstName + ' ' + _user.UserLastName, _user.UserImage };
+            string path = _env.ContentRootPath + @"\Data\DashboardMenuOptions.json";
+            ViewData["menuItems"] = HelpersFunctions.GetMenuOptionsForUser(_user.UserId, path);
+
             using (GlobalDBContext _context = new GlobalDBContext())
             {
                 if (generalProfile.UserImage != null && generalProfile.UserImage.Length > 0)
@@ -129,8 +133,6 @@ namespace Global_Intern.Controllers
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + generalProfile.UserImage.FileName;
                     string filePath = uploadFolder + uniqueFileName;
                     generalProfile.UserImage.CopyTo(new FileStream(filePath, FileMode.Create));
-                    // if new image is uploaded with other user info
-                    _user.AddFromAccountGeneralProfile(generalProfile, uniqueFileName);
                     
                     // Delete previous uploaded Image
                     if (!String.IsNullOrEmpty(_user.UserImage))
@@ -138,6 +140,9 @@ namespace Global_Intern.Controllers
                         string imagePath = uploadFolder + _user.UserImage;
                         Directory.Delete(imagePath);
                     }
+                    // if new image is uploaded with other user info
+                    _user.AddFromAccountGeneralProfile(generalProfile, uniqueFileName);
+
                 }
                 else
                 {
@@ -147,8 +152,7 @@ namespace Global_Intern.Controllers
                 _context.Users.Update(_user);
                 _context.SaveChanges();
                 GeneralProfile gen = new GeneralProfile(_user);
-                string path = _env.ContentRootPath + @"\Data\DashboardMenuOptions.json";
-                ViewData["menuItems"] = HelpersFunctions.GetMenuOptionsForUser(_user.UserId, path);
+                
                 return View(gen);
             }
 

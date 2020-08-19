@@ -13,6 +13,7 @@ using System.Net.Http; // for -> HttpClient to make request to API
 using Global_Intern.Util.pagination;
 using Global_Intern.Util;
 using Global_Intern.Models.StudentModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Global_Intern.Controllers
 {
@@ -24,23 +25,28 @@ namespace Global_Intern.Controllers
         private readonly string host;
         private readonly HttpClient _client = new HttpClient();
         private readonly string Internship_url = "/api/Internships";
-        private User LoggedIn_User = null;
+        // This prop won't be null if user is loggedIn
+        private User _user = null;
         public HomeController(ILogger<HomeController> logger, IHttpContextAccessor httpContextAccessor, ICustomAuthManager auth)
         {
             _customAuthManager = auth;
             _httpContextAccessor = httpContextAccessor;
             host = "https://" + _httpContextAccessor.HttpContext.Request.Host.Value;
             _logger = logger;
+            
+            // get user
+
+            setUser();
         }
 
         public IActionResult Index()
         {
-            
-            CookieLogin();
-            
             // For NavBar to display user is LoggedIn
-            ViewData["LoggeduserName"] = LoggedIn_User != null? LoggedIn_User.UserFirstName + ' ' + LoggedIn_User.UserLastName : null;
-            
+            if (_user != null)
+            {
+                ViewData["LoggeduserName"] = new List<string>() { _user.UserFirstName + ' ' + _user.UserLastName, _user.UserImage };
+            }
+
             return View();
         }
 
@@ -77,7 +83,11 @@ namespace Global_Intern.Controllers
                 var intern = data[0]["data"][0];
 
                 // Display User is LoggedIn
-                ViewData["LoggeduserName"] = LoggedIn_User != null ? LoggedIn_User.UserFirstName + ' ' + LoggedIn_User.UserLastName : null;
+                if(_user != null)
+                {
+                    ViewData["LoggeduserName"] = new List<string>() { _user.UserFirstName + ' ' + _user.UserLastName, _user.UserImage };
+                }
+                
 
                 return View(model);
             }
@@ -95,7 +105,10 @@ namespace Global_Intern.Controllers
             string InternshipUrl = host + Internship_url;
 
             // Display User is LoggedIn
-            ViewData["LoggeduserName"] = LoggedIn_User != null ? LoggedIn_User.UserFirstName + ' ' + LoggedIn_User.UserLastName : null;
+            if (_user != null)
+            {
+                ViewData["LoggeduserName"] = new List<string>() { _user.UserFirstName + ' ' + _user.UserLastName, _user.UserImage };
+            }
 
             try
             {
@@ -161,10 +174,10 @@ namespace Global_Intern.Controllers
             return false;
 
         }
-
-        public void CookieLogin() {
+        public void setUser()
+        {
             // Check if Cookie Exists and if true create a Session
-           var cookie = Request.Cookies["UserToken"];
+            var cookie = _httpContextAccessor.HttpContext.Request.Cookies["UserToken"];
             if (cookie != null)
             {
                 _httpContextAccessor.HttpContext.Session.SetString("UserToken", cookie);
@@ -173,19 +186,22 @@ namespace Global_Intern.Controllers
                     int userID = _customAuthManager.Tokens.FirstOrDefault(i => i.Key == cookie).Value.Item3;
                     using (GlobalDBContext _context = new GlobalDBContext())
                     {
-                        LoggedIn_User = _context.Users.Find(userID);
+                        _user = _context.Users.Include(e => e.Role).FirstOrDefault(w => w.UserId == userID);
                     }
                 }
             }
-            else {
+            else
+            {
+                // if cookie do not exits, get user from session
                 string tokenFromSession = Response.HttpContext.Session.GetString("UserToken");
-                if (tokenFromSession != null) {
+                if (tokenFromSession != null)
+                {
                     int userID = _customAuthManager.Tokens.FirstOrDefault(i => i.Key == tokenFromSession).Value.Item3;
                     using (GlobalDBContext _context = new GlobalDBContext())
                     {
-                        LoggedIn_User = _context.Users.Find(userID);
+                        _user = _context.Users.Include(e => e.Role).FirstOrDefault(w => w.UserId == userID);
                     }
-                }            
+                }
             }
         }
     }

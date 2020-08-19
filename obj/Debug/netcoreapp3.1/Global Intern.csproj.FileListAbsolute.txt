@@ -270,3 +270,8 @@ C:\ASPNET\2019\Global_Intern\obj\Debug\netcoreapp3.1\Razor\Views\Account\General
 C:\ASPNET\2019\Global_Intern\obj\Debug\netcoreapp3.1\Razor\Views\Account\ProfileView\EmployerProfile.cshtml.g.cs
 C:\ASPNET\2019\Global_Intern\obj\Debug\netcoreapp3.1\Razor\Views\Account\ProfileView\StudentProfile.cshtml.g.cs
 C:\ASPNET\2019\Global_Intern\obj\Debug\netcoreapp3.1\Razor\Views\Account\ProfileView\TeacherProfile.cshtml.g.cs
+C:\ASPNET\2019\Global_Intern\bin\Debug\netcoreapp3.1\Data\DashboardMenuOptions.json
+C:\ASPNET\2019\Global_Intern\obj\Debug\netcoreapp3.1\Global Intern.csprojAssemblyReference.cache
+C:\ASPNET\2019\Global_Intern\obj\Debug\netcoreapp3.1\Razor\Views\Account\ConfirmEmail.cshtml.g.cs
+C:\ASPNET\2019\Global_Intern\obj\Debug\netcoreapp3.1\Razor\Views\DashboardEmployer\GeneralProfile.cshtml.g.cs
+C:\ASPNET\2019\Global_Intern\obj\Debug\netcoreapp3.1\Razor\Views\DashboardStudent\GeneralProfile.cshtml.g.cs
